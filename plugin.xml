@@ -6,6 +6,10 @@
   <repo>https://koenromers@bitbucket.org/kroodle/cordova-plugin-heartbeat.git</repo>
   <issue>https://bitbucket.org/kroodle/cordova-plugin-heartbeat/issues</issue>
 
+  <js-module src="www/heartbeat.js" name="Heartbeat">
+    <clobbers target="Heartbeat"/>
+  </js-module>
+
   <!-- ios -->
   <platform name="ios">
     <config-file target="config.xml" parent="/*">
