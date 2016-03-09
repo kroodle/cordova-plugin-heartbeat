@@ -4,6 +4,13 @@
 //
 // @end
 
+
+@interface HeartbeatPlugin()
+
+@property (copy, nonatomic) NSString *mainCallbackId;
+
+@end
+
 @implementation HeartbeatPlugin
 
 - (void)pluginInitialize {
@@ -18,8 +25,10 @@
 
 - (void)start:(CDVInvokedUrlCommand*)command {
   NSLog(@"Heartbeat start");
+  [self setMainCallbackId:[command callbackId]];
   // [[HeartbeatLib shared] start]];
   CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
+  [pluginResult setKeepCallbackAsBool:YES];
   [[self commandDelegate] sendPluginResult:pluginResult callbackId:[command callbackId]];
 }
 
@@ -31,10 +40,10 @@
 }
 
 - (void)onHeartBeat:(int)bpm {
-  NSLog(@"Heartbeat onHeartBeat");
+  NSLog(@"Heartbeat onHeartBeat: %d", bpm);
   CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsInt:bpm];
-  // [pluginResult setKeepCallbackAsBool:YES];
-  [[self commandDelegate] sendPluginResult:pluginResult callbackId:[command callbackId]];
+  [pluginResult setKeepCallbackAsBool:YES];
+  [[self commandDelegate] sendPluginResult:pluginResult callbackId:[self mainCallbackId]];
 }
 
 
