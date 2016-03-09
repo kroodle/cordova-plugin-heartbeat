@@ -1,6 +1,6 @@
 #import <Cordova/CDV.h>
 
-@interface HeartbeatPlugin : CDVPlugin <UIApplicationDelegate>
+@interface HeartbeatPlugin : CDVPlugin
 
 - (void)start:(CDVInvokedUrlCommand *)command;
 - (void)stop:(CDVInvokedUrlCommand *)command;
