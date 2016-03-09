@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0" id="cordova-plugin-heartbeat" version="1.0.0">
+  <name>Heartbeat plugin</name>
+  <description>Heartbeat (Happitech) plugin</description>
+  <repo>https://koenromers@bitbucket.org/kroodle/cordova-plugin-heartbeat.git</repo>
+  <issue>https://bitbucket.org/kroodle/cordova-plugin-heartbeat/issues</issue>
+
+  <!-- ios -->
+  <platform name="ios">
+    <config-file target="config.xml" parent="/*">
+      <feature name="Heartbeat">
+        <param name="ios-package" value="HeartbeatPlugin"/>
+      </feature>
+    </config-file>
+    <header-file src="src/ios/HeartbeatPlugin.h" target-dir="HeartbeatPlugin"/>
+    <source-file src="src/ios/HeartbeatPlugin.m" target-dir="HeartbeatPlugin"/>
+  </platform>
+
+</plugin>
