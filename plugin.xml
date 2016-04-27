@@ -19,6 +19,8 @@
     </config-file>
     <header-file src="src/ios/HeartbeatPlugin.h" target-dir="HeartbeatPlugin"/>
     <source-file src="src/ios/HeartbeatPlugin.m" target-dir="HeartbeatPlugin"/>
+
+    <framework src="src/ios/Frameworks/HeartbeatLib.framework" custom="true"/>
   </platform>
 
 </plugin>
