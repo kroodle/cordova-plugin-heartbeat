@@ -6,12 +6,14 @@ For now it's only iOS and private. Based on [Happitech SDK](http://www.happitech
 
 To install the plugin to your Cordova project use the Cordova CLI Tool:
 
-  $ cordova plugin add git+ssh://git@bitbucket.org/kroodle/cordova-plugin-heartbeat.git
+```
+#!bash
+$ cordova plugin add git+ssh://git@bitbucket.org/kroodle/cordova-plugin-heartbeat.git
+```
+
 
 ## Requirements
-
-* `iOS`
-  * iOS 6+.
+* iOS 6+
 
 ## Basic Usage
 
