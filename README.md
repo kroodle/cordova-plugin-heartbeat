@@ -31,7 +31,7 @@ onDeviceReady: function() {
     console.log('Realtime heartbeat is: ', bpm);
   });
   // Progress of measurement
-  Heartbeat.on('percentage', function(percentage) {
+  Heartbeat.on('progress', function(percentage) {
     console.log('Your measurement is on: ' + percentage + '%');
   });
   // Raw values to plot a graph
@@ -63,4 +63,4 @@ onDeviceReady: function() {
 
 #### Angular/Ionic implementation
 
-Coming soon
+Please visit the [NgCordova plugin](https://bitbucket.org/kroodle/ng-cordova-heartbeat).

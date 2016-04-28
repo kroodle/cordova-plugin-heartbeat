@@ -106,7 +106,7 @@
 
 - (void)onPercentageCompleted:(int)percentage {
   dispatch_async(dispatch_get_main_queue(), ^{
-    [self sendSuccessResultWithType:@"percentage" andNumber:[NSNumber numberWithInt:percentage]];
+    [self sendSuccessResultWithType:@"progress" andNumber:[NSNumber numberWithInt:percentage]];
   });
 }
 
