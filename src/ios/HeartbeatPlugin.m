@@ -152,11 +152,10 @@
         warningString = @"LOW_QUALITY";
       break;
       default:
+        warningString = @"";
       break;
     }
-    if ([warningString length] > 0) {
-      [self sendSuccessResultWithType:@"warning" andString:warningString];
-    }
+    [self sendSuccessResultWithType:@"warning" andString:warningString];
   });
 }
 
@@ -186,11 +185,10 @@
         errorString = @"TOO_MUCH_MOVEMENT";
         break;
       default:
+        errorString = @"";
         break;
     }
-    if ([errorString length] > 0) {
-      [self sendErrorResultWithType:@"error" andMessage:errorString];
-    }
+    [self sendErrorResultWithType:@"error" andMessage:errorString];
   });
 }
 
