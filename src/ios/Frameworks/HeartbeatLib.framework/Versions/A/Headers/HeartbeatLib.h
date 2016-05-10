@@ -29,6 +29,10 @@
 @property (nonatomic, retain) Camera * camera;
 @property (nonatomic, retain) id<HeartBeatDelegate> delegate;
 @property (nonatomic, readwrite) double measureTime;
+@property (nonatomic, readwrite) int pointsForGraph;
+@property (nonatomic, retain) NSMutableArray * total;
+@property (nonatomic, retain) NSMutableArray * beats;
+@property (nonatomic, retain) NSMutableArray * rawPoints;
 
 - (void)start;
 - (void)stop;

@@ -20,16 +20,18 @@
 @property (nonatomic, readwrite) int i;
 @property (nonatomic, readwrite) int k;
 @property (nonatomic, readwrite) int change;
+@property (nonatomic, readwrite) double corrected;
 
 - (HSV *) RGBtoHSV:(RGB *)rgb;
 - (RGB *) bufferToRGB:(CMSampleBufferRef)buffer;
 - (double) getAverage:(int)index forBeats:(NSArray *)list;
 - (double)calculateHRV:(double)currentPulse andNextPulse:(double)next;
-- (double) getReverseAverage:(int)index forBeats:(NSArray *)list;
-- (void) afterFilter:(NSMutableArray *)RR atStartIndex:(int)startIndex;
-- (void) finalFilter:(NSArray *)RR;
+- (NSMutableArray *) newAfterFilter:(NSMutableArray *)input atStartIndex:(int)startIndex;
+- (NSMutableArray *) afterFilter:(NSMutableArray *)RR atStartIndex:(int)startIndex;
+- (NSMutableArray *) finalFilter:(NSArray *)input atStartIndex:(int)startIndex;
 - (void) resetAfterFilter;
 - (void) resetValues;
 - (FPRange *)checkMovement:(NSMutableArray *)RR;
 - (int)moveCount:(NSMutableArray *)values;
+- (double)getBatteryPercentage;
 @end

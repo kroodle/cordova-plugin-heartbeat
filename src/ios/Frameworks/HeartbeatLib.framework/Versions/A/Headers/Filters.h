@@ -13,10 +13,8 @@
 #define NPOLES 8
 
 @interface Filters : NSObject {
-    float xv[NZEROS+1], yv[NPOLES+1];
+    double xv[NZEROS+1], yv[NPOLES+1];
 }
-
-//- (NSArray *) processArray:(NSArray *)inputData;
-- (float) processValue:(float) value;
+- (double) processValue:(double) value;
 
 @end

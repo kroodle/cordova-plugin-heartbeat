@@ -36,7 +36,8 @@ typedef NS_ENUM(NSInteger, HeartBeatStatus) {
 typedef NS_ENUM(NSInteger, HeartBeatWarning) {
     NO_WARNING,
     SHAKING,
-    LOW_QUALITY
+    LOW_QUALITY,
+    LOW_BATTERY
 };
 
 
@@ -55,6 +56,7 @@ typedef NS_ENUM(NSInteger, HeartBeatWarning) {
 @property (nonatomic, retain) Interpolation * interpolation;
 @property (nonatomic, retain) id<CameraDelegate> delegate;
 @property (nonatomic, readwrite) double measureTime;
+@property (nonatomic, retain) NSString * resultString;
 
 - (void)startMeasuring;
 - (void)stopMeasure;

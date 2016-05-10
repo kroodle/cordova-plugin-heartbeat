@@ -11,12 +11,15 @@
 #import "Filters.h"
 #import "Functions.h"
 
-#define MAX_FRAMES_PER_ARRAY 30
 
 @interface Interpolation : NSObject
 
 @property (nonatomic, readwrite) int sampleBPM;
+@property (nonatomic, readwrite) int minBeats;
 @property (nonatomic, readwrite) float calibrationTime;
+@property (nonatomic, readwrite) double prevAvgCorrelation;
+@property (nonatomic, readwrite) double avgCorrelation;
+@property (nonatomic, readwrite) double badSignalQualityIdentifier;
 @property (nonatomic, retain) Filters * filter;
 @property (nonatomic, retain) Functions * functions;
 @property (nonatomic, retain) NSMutableArray * total;
@@ -25,9 +28,8 @@
 @property (nonatomic, retain) NSMutableArray * rawPoints;
 @property (nonatomic, readwrite) float hrv;
 @property (nonatomic, readwrite) int bpm;
-@property (nonatomic, retain) NSString * writeString3;
 
--(int) interpolate:(NSArray *)input;
+-(double) interpolate:(NSMutableArray *)input;
 -(double)getAverageHRV;
 -(double)getRMSSD;
 -(NSInteger) calculateResult;

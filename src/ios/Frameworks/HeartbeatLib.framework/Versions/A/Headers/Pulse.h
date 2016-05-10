@@ -10,6 +10,7 @@
 @interface Pulse : NSObject<NSCopying>
 
 @property (nonatomic, readwrite) double value;
+@property (nonatomic, readwrite) double avg;
 @property (nonatomic, readwrite) double original;
 @property (nonatomic, readwrite) float h;
 @property (nonatomic, readwrite) float s;
@@ -30,6 +31,8 @@
 @property (nonatomic, readwrite) double z;
 @property (nonatomic, readwrite) int index;
 @property (nonatomic, readwrite) int originalIndex;
+@property (nonatomic, readwrite) int change;
+@property (nonatomic, readwrite) int shake;
 @property (nonatomic, readwrite) BOOL drawLineStart;
 @property (nonatomic, readwrite) BOOL drawLineEnd;
 @property (nonatomic, readwrite) double correlation;
