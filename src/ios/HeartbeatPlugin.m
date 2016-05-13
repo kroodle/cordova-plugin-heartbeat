@@ -2,10 +2,7 @@
 #import "HeartbeatLib/Pulse.h"
 #import "HeartbeatPlugin.h"
 
-@interface HeartbeatPlugin()<HeartBeatDelegate> {
-  int _pointsForGraph;
-  int _measureTime;
-}
+@interface HeartbeatPlugin()<HeartBeatDelegate>
 
 @property (copy, nonatomic) NSString *mainCallbackId;
 @property (strong, nonatomic) NSMutableArray *resultQueue;
@@ -16,7 +13,7 @@
 
 @implementation HeartbeatPlugin
 
-#define kPluginVersion @"1.0.4"
+#define kPluginVersion @"1.0.5"
 
 - (void)pluginInitialize {
   [self setResultQueue:[[NSMutableArray alloc] init]];
@@ -48,11 +45,11 @@
 }
 
 - (void)setPointsForGraph:(CDVInvokedUrlCommand*)command {
-  _pointsForGraph = [[command argumentAtIndex:0] intValue];
+  [[self lib] setPointsForGraph:[[command argumentAtIndex:0] intValue]];
 }
 
 - (void)setMeasureTime:(CDVInvokedUrlCommand*)command {
-  _measureTime = [[command argumentAtIndex:0] intValue];
+  [[self lib] setMeasureTime:[[command argumentAtIndex:0] intValue]];
 }
 
 #pragma callback methods
