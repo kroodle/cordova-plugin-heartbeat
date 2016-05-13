@@ -86,6 +86,14 @@ Heartbeat.prototype.stop = function(){
   exec(success, fail, 'Heartbeat', 'stop', []);
 };
 
+Heartbeat.prototype.setPointsForGraph = function(points, success, fail) {
+  exec(success, fail, 'Heartbeat', 'setPointsForGraph', [points]);
+};
+
+Heartbeat.prototype.setMeasureTime = function(measureTime, success, fail) {
+  exec(success, fail, 'Heartbeat', 'setMeasureTime', [measureTime]);
+};
+
 Heartbeat.prototype.successCallback = function(payload) {
   if (payload && payload.type) {
     this.emit(payload.type, payload.data);

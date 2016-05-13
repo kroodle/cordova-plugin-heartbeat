@@ -2,7 +2,10 @@
 #import "HeartbeatLib/Pulse.h"
 #import "HeartbeatPlugin.h"
 
-@interface HeartbeatPlugin()<HeartBeatDelegate>
+@interface HeartbeatPlugin()<HeartBeatDelegate> {
+  int _pointsForGraph;
+  int _measureTime;
+}
 
 @property (copy, nonatomic) NSString *mainCallbackId;
 @property (strong, nonatomic) NSMutableArray *resultQueue;
@@ -13,15 +16,17 @@
 
 @implementation HeartbeatPlugin
 
-#define kPluginVersion @"1.0.0"
+#define kPluginVersion @"1.0.4"
 
 - (void)pluginInitialize {
   [self setResultQueue:[[NSMutableArray alloc] init]];
   [self setLib:[[HeartbeatLib alloc] init]];
   [[self lib] setDelegate:self];
-  // Only show last 100 points for now to draw graph
+  // Only show last 500 points for now to draw graph
   // Might be something to make configurable in future
   [[self lib] setPointsForGraph:500];
+  // Since we're not using the HRV yet we can decrease the measure time
+  [[self lib] setMeasureTime:20];
 }
 
 - (void)start:(CDVInvokedUrlCommand*)command {
@@ -40,6 +45,14 @@
     CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
     [[self commandDelegate] sendPluginResult:pluginResult callbackId:[command callbackId]];
   }];
+}
+
+- (void)setPointsForGraph:(CDVInvokedUrlCommand*)command {
+  _pointsForGraph = [[command argumentAtIndex:0] intValue];
+}
+
+- (void)setMeasureTime:(CDVInvokedUrlCommand*)command {
+  _measureTime = [[command argumentAtIndex:0] intValue];
 }
 
 #pragma callback methods
