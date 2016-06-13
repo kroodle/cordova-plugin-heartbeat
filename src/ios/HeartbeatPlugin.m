@@ -198,6 +198,9 @@
     case TO_MUCH_MOVEMENT:
       errorString = @"TOO_MUCH_MOVEMENT";
       break;
+    case INACCURATE_MEASUREMENT:
+      errorstring = @"INACCURATE_MEASUREMENT";
+      break;
     default:
       errorString = @"";
       break;
