@@ -149,6 +149,9 @@
     case COMPLETED:
       statusString = @"COMPLETED";
       break;
+    case INACCURATE_MEASUREMENT:
+      statusString = @"INACCURATE_MEASUREMENT";
+      break;
     default:
       statusString = @"ERROR";
       break;
@@ -197,9 +200,6 @@
       break;
     case TO_MUCH_MOVEMENT:
       errorString = @"TOO_MUCH_MOVEMENT";
-      break;
-    case INACCURATE_MEASUREMENT:
-      errorstring = @"INACCURATE_MEASUREMENT";
       break;
     default:
       errorString = @"";
