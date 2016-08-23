@@ -82,7 +82,7 @@ Heartbeat.prototype.start = function(success, fail){
   exec(this.successCallback.bind(this), this.errorCallback.bind(this), 'Heartbeat', 'start', []);
 };
 
-Heartbeat.prototype.stop = function(){
+Heartbeat.prototype.stop = function(success, fail){
   exec(success, fail, 'Heartbeat', 'stop', []);
 };
 
