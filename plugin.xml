@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0" id="cordova-plugin-heartbeat" version="1.0.9">
+<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0" id="cordova-plugin-heartbeat" version="1.0.10">
   <name>Heartbeat plugin</name>
   <description>Heartbeat (Happitech) plugin</description>
   <repo>https://koenromers@bitbucket.org/kroodle/cordova-plugin-heartbeat.git</repo>
@@ -19,8 +19,11 @@
     </config-file>
     <header-file src="src/ios/HeartbeatPlugin.h" target-dir="HeartbeatPlugin"/>
     <source-file src="src/ios/HeartbeatPlugin.m" target-dir="HeartbeatPlugin"/>
-
     <framework src="src/ios/Frameworks/HeartbeatLib.framework" custom="true"/>
+    <preference name="CAMERA_USAGE_DESCRIPTION" default=" " />
+     <config-file target="*-Info.plist" parent="NSCameraUsageDescription">
+         <string>Measure your heartbeat by using the camera and flash.</string>
+     </config-file>
   </platform>
 
 </plugin>
