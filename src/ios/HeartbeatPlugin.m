@@ -13,8 +13,6 @@
 
 @implementation HeartbeatPlugin
 
-#define kPluginVersion @"1.0.10"
-
 - (void)pluginInitialize {
   [self setResultQueue:[[NSMutableArray alloc] init]];
   [self setLib:[[HeartbeatLib alloc] init]];
