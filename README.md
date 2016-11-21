@@ -11,10 +11,6 @@ To install the plugin to your Cordova project use the Cordova CLI Tool:
 $ cordova plugin add git+ssh://git@bitbucket.org/kroodle/cordova-plugin-heartbeat.git
 ```
 
-
-## Requirements
-* iOS 6+
-
 ## Basic Usage
 
 ### Initialization
@@ -63,4 +59,4 @@ onDeviceReady: function() {
 
 #### Angular/Ionic implementation
 
-Please visit the [NgCordova plugin](https://bitbucket.org/kroodle/ng-cordova-heartbeat).
+Please visit the [Ionic Native plugin](https://bitbucket.org/kroodle/ionic-native-heartbeat).
