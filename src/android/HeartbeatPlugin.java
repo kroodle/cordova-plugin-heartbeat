@@ -31,13 +31,14 @@ public class HeartbeatPlugin extends CordovaPlugin implements HeartBeatListener 
   private CallbackContext mainCallback;
   private List<PluginResult> resultQueue;
   private HashMap<String, CallbackContext> pendingCallbacks = new HashMap<String, CallbackContext>();
+  private int measureTime = 60;
 
   @Override
   public void initialize(CordovaInterface cordova, CordovaWebView webView) {
     Log.i(TAG, "initialize HeartbeatPlugin");
     super.initialize(cordova, webView);
     resultQueue = new ArrayList<PluginResult>();
-    monitor = new Monitor(cordova.getActivity(), this, 30);
+    monitor = new Monitor(cordova.getActivity(), this, measureTime);
     sendResultQueue();
   }
 
@@ -48,6 +49,9 @@ public class HeartbeatPlugin extends CordovaPlugin implements HeartBeatListener 
       return true;
     } else if (action.equals("stop")) {
       stop(callbackContext);
+      return true;
+    } else if (action.equals("setMeasureTime")) {
+      setMeasureTime(args, callbackContext);
       return true;
     }
     return false;
@@ -75,6 +79,23 @@ public class HeartbeatPlugin extends CordovaPlugin implements HeartBeatListener 
     PluginResult result = new PluginResult(PluginResult.Status.NO_RESULT, "");
     callbackContext.sendPluginResult(result);
     monitor.stopMeasuring();
+  }
+
+  /**
+   * Sets the measure time
+   * @param args
+   * @param callbackContext
+   */
+  protected void setMeasureTime(JSONArray args, CallbackContext callbackContext) {
+    try {
+      measureTime = args.getInt(0);
+      monitor = new Monitor(cordova.getActivity(), this, measureTime);
+      PluginResult result = new PluginResult(PluginResult.Status.NO_RESULT, "");
+      callbackContext.sendPluginResult(result);
+    } catch (JSONException e) {
+      Log.e(TAG, "could not serialize result for callback");
+    }
+    Log.d(TAG, "Set measure time: " + measureTime);
   }
 
   /**
