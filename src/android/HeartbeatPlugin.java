@@ -8,6 +8,8 @@ import java.util.Arrays;
 
 import android.util.Log;
 import android.graphics.Bitmap;
+import android.os.Handler;
+import android.os.SystemClock;
 
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaInterface;
@@ -31,13 +33,22 @@ public class HeartbeatPlugin extends CordovaPlugin implements HeartBeatListener 
   private CallbackContext mainCallback;
   private List<PluginResult> resultQueue;
   private HashMap<String, CallbackContext> pendingCallbacks = new HashMap<String, CallbackContext>();
+  private int measureTime = 60;
+  // Timer properties
+  private int remainingSeconds = 0;
+  private Handler timerHandler = new Handler();
+  private long startTime = 0L;
+  private boolean timerruns = false;
+  private long timeInMilliseconds = 0L;
+  private long timeSwapBuff = 0L;
+  private long updatedTime = 0L;
 
   @Override
   public void initialize(CordovaInterface cordova, CordovaWebView webView) {
     Log.i(TAG, "initialize HeartbeatPlugin");
     super.initialize(cordova, webView);
     resultQueue = new ArrayList<PluginResult>();
-    monitor = new Monitor(cordova.getActivity(), this, 30);
+    monitor = new Monitor(cordova.getActivity(), this, measureTime);
     sendResultQueue();
   }
 
@@ -48,6 +59,9 @@ public class HeartbeatPlugin extends CordovaPlugin implements HeartBeatListener 
       return true;
     } else if (action.equals("stop")) {
       stop(callbackContext);
+      return true;
+    } else if (action.equals("setMeasureTime")) {
+      setMeasureTime(args, callbackContext);
       return true;
     }
     return false;
@@ -60,6 +74,7 @@ public class HeartbeatPlugin extends CordovaPlugin implements HeartBeatListener 
   protected void start(CallbackContext callbackContext) {
     Log.i(TAG, "start");
     mainCallback = callbackContext;
+    remainingSeconds = measureTime;
     PluginResult result = new PluginResult(PluginResult.Status.NO_RESULT, "");
     result.setKeepCallback(true);
     callbackContext.sendPluginResult(result);
@@ -78,6 +93,23 @@ public class HeartbeatPlugin extends CordovaPlugin implements HeartBeatListener 
   }
 
   /**
+   * Sets the measure time
+   * @param args
+   * @param callbackContext
+   */
+  protected void setMeasureTime(JSONArray args, CallbackContext callbackContext) {
+    try {
+      measureTime = args.getInt(0);
+      monitor = new Monitor(cordova.getActivity(), this, measureTime);
+      PluginResult result = new PluginResult(PluginResult.Status.NO_RESULT, "");
+      callbackContext.sendPluginResult(result);
+    } catch (JSONException e) {
+      Log.e(TAG, "could not serialize result for callback");
+    }
+    Log.d(TAG, "Set measure time: " + measureTime);
+  }
+
+  /**
    * Send a success result to the webview
    * @param type
    * @param data
@@ -93,7 +125,7 @@ public class HeartbeatPlugin extends CordovaPlugin implements HeartBeatListener 
             PluginResult pluginResult = new PluginResult(PluginResult.Status.OK, result);
             pluginResult.setKeepCallback(true);
             if (mainCallback != null) {
-              Log.d(TAG, "Sending success result: " + pluginResult.getMessage());
+              // Log.d(TAG, "Sending success result: " + pluginResult.getMessage());
               mainCallback.sendPluginResult(pluginResult);
             } else {
               Log.d(TAG, "Queueing success result: " + pluginResult.getMessage());
@@ -220,6 +252,15 @@ public class HeartbeatPlugin extends CordovaPlugin implements HeartBeatListener 
       status = "LOW_RED_VALUE";
     }
     sendSuccessResult("status", status);
+
+    if (s == Monitor.STATUS.MEASURING && timerruns == false) {
+      startTime = SystemClock.uptimeMillis();
+      timerHandler.postDelayed(updateTimerThread, 0);
+      Log.d(TAG, "MEASURING:" + String.valueOf(startTime));
+    } else {
+      timerruns = false;
+      timerHandler.removeCallbacks(updateTimerThread);
+    }
   }
 
   @Override
@@ -229,8 +270,7 @@ public class HeartbeatPlugin extends CordovaPlugin implements HeartBeatListener 
   }
 
   @Override
-  public void onPPGCanvasUpdate(Bitmap bitmap) {
-  }
+  public void onPPGCanvasUpdate(Bitmap bitmap) {  }
 
   @Override
   public void onPPGDataUpdate(double[] ppgData) {
@@ -242,5 +282,22 @@ public class HeartbeatPlugin extends CordovaPlugin implements HeartBeatListener 
       Log.e(TAG, "could not serialize PPGData");
     }
   }
+
+  private Runnable updateTimerThread = new Runnable() {
+    public void run() {
+      timeInMilliseconds = SystemClock.uptimeMillis() - startTime;
+      updatedTime = timeSwapBuff + timeInMilliseconds;
+      int seconds = (int) (updatedTime / 1000);
+      remainingSeconds = measureTime - seconds;
+      int percentage = (int)(((double)seconds / (double)measureTime) * 100);
+
+      Log.d(TAG, "Elapsed seconds:" + seconds);
+      Log.d(TAG, "Remaining seconds:" + remainingSeconds);
+      Log.d(TAG, "Progress:" + percentage);
+      sendSuccessResult("progress", percentage);
+
+      timerHandler.postDelayed(this, 500);
+    }
+  };
 
 }
