@@ -116,7 +116,7 @@ public class HeartbeatPlugin extends CordovaPlugin implements HeartBeatListener 
             PluginResult pluginResult = new PluginResult(PluginResult.Status.OK, result);
             pluginResult.setKeepCallback(true);
             if (mainCallback != null) {
-              // Log.d(TAG, "Sending success result: " + pluginResult.getMessage());
+              Log.d(TAG, "Sending success result: " + pluginResult.getMessage());
               mainCallback.sendPluginResult(pluginResult);
             } else {
               Log.d(TAG, "Queueing success result: " + pluginResult.getMessage());
@@ -142,12 +142,14 @@ public class HeartbeatPlugin extends CordovaPlugin implements HeartBeatListener 
           JSONObject result = new JSONObject();
           try {
             result.put("type", type);
-            result.put("data", message);
+            result.put("message", message);
             PluginResult pluginResult = new PluginResult(PluginResult.Status.ERROR, result);
             pluginResult.setKeepCallback(true);
             if (mainCallback != null) {
+              Log.d(TAG, "Sending error result: " + pluginResult.getMessage());
               mainCallback.sendPluginResult(pluginResult);
             } else {
+              Log.d(TAG, "Queueing error result: " + pluginResult.getMessage());
               resultQueue.add(pluginResult);
             }
           } catch (JSONException e) {
