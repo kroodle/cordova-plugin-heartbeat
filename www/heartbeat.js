@@ -102,7 +102,7 @@ Heartbeat.prototype.successCallback = function(payload) {
 
 Heartbeat.prototype.errorCallback = function(payload) {
   if (payload && payload.type) {
-    this.emit(payload.type + 'Error', new Error(payload.message));
+    this.emit(payload.type, new Error(payload.message));
   }
 };
 
