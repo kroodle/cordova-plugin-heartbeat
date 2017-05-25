@@ -116,10 +116,10 @@ public class HeartbeatPlugin extends CordovaPlugin implements HeartBeatListener 
             PluginResult pluginResult = new PluginResult(PluginResult.Status.OK, result);
             pluginResult.setKeepCallback(true);
             if (mainCallback != null) {
-              Log.d(TAG, "Sending success result: " + pluginResult.getMessage());
+              // Log.d(TAG, "Sending success result: " + pluginResult.getMessage());
               mainCallback.sendPluginResult(pluginResult);
             } else {
-              Log.d(TAG, "Queueing success result: " + pluginResult.getMessage());
+              // Log.d(TAG, "Queueing success result: " + pluginResult.getMessage());
               resultQueue.add(pluginResult);
             }
           } catch (JSONException e) {
@@ -146,10 +146,10 @@ public class HeartbeatPlugin extends CordovaPlugin implements HeartBeatListener 
             PluginResult pluginResult = new PluginResult(PluginResult.Status.ERROR, result);
             pluginResult.setKeepCallback(true);
             if (mainCallback != null) {
-              Log.d(TAG, "Sending error result: " + pluginResult.getMessage());
+              // Log.d(TAG, "Sending error result: " + pluginResult.getMessage());
               mainCallback.sendPluginResult(pluginResult);
             } else {
-              Log.d(TAG, "Queueing error result: " + pluginResult.getMessage());
+              // Log.d(TAG, "Queueing error result: " + pluginResult.getMessage());
               resultQueue.add(pluginResult);
             }
           } catch (JSONException e) {
@@ -193,7 +193,7 @@ public class HeartbeatPlugin extends CordovaPlugin implements HeartBeatListener 
 
   @Override
   public void onFPSChange(long fps) {
-    Log.d(TAG, "onFPSChange:" + String.valueOf(fps));
+    // Log.d(TAG, "onFPSChange:" + String.valueOf(fps));
     sendSuccessResult("fps", fps);
   }
 
@@ -249,7 +249,7 @@ public class HeartbeatPlugin extends CordovaPlugin implements HeartBeatListener 
 
   @Override
   public void onBeatSignalStrength(double signal) {
-    Log.d(TAG, "onBeatSignalStrength:" + String.valueOf(signal));
+    // Log.d(TAG, "onBeatSignalStrength:" + String.valueOf(signal));
     sendSuccessResult("signal", signal);
   }
 
@@ -258,7 +258,7 @@ public class HeartbeatPlugin extends CordovaPlugin implements HeartBeatListener 
 
   @Override
   public void onGraphArrayUpdated(double[] ppgData) {
-    Log.d(TAG, "onPPGDataUpdate:" + Arrays.toString(ppgData));
+    // Log.d(TAG, "onPPGDataUpdate:" + Arrays.toString(ppgData));
     try {
       JSONArray json = new JSONArray(ppgData);
       sendSuccessResult("graph", json);
