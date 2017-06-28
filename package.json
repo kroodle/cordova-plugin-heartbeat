@@ -1,0 +1,14 @@
+{
+  "name": "cordova-plugin-heartbeat",
+  "private": true,
+  "description": "Measure your heartbeat by using the Happitech SDK",
+  "main": "www/heartbeat.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@bitbucket.org/kroodle/cordova-plugin-heartbeat.git"
+  },
+  "homepage": "https://bitbucket.org/kroodle/cordova-plugin-heartbeat#readme"
+}
