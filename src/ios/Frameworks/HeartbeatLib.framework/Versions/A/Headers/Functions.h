@@ -14,16 +14,19 @@
 #import "RGB.h"
 #include <stdlib.h>
 
+@class Pulse;
+@class FFT;
+@class Value;
+@class LeastSquare;
+
 @interface Functions : NSObject
-
-
 @property (nonatomic, readwrite) int i;
 @property (nonatomic, readwrite) int k;
 @property (nonatomic, readwrite) int change;
 @property (nonatomic, readwrite) double corrected;
 
-- (HSV *) RGBtoHSV:(RGB *)rgb;
-- (RGB *) bufferToRGB:(CMSampleBufferRef)buffer;
+- (NSMutableArray <RGB *> *) splitBufferInPartsToRGB:(CMSampleBufferRef)buffer numOfParts:(int)parts;
+- (NSArray<HSV *> *) RGBtoHSV:(NSArray<RGB *> *)rgbs;
 - (double) getAverage:(int)index forBeats:(NSArray *)list;
 - (double)calculateHRV:(double)currentPulse andNextPulse:(double)next;
 - (NSMutableArray *) newAfterFilter:(NSMutableArray *)input atStartIndex:(int)startIndex;
@@ -34,4 +37,10 @@
 - (FPRange *)checkMovement:(NSMutableArray *)RR;
 - (int)moveCount:(NSMutableArray *)values;
 - (double)getBatteryPercentage;
+
+- (double)meanRmssd:(NSMutableArray *)RR;
+- (BOOL) getIrregularity:(NSMutableArray *)RR;
+
+- (FFT *)checkFFTForPulses:(NSArray <Pulse *> *)pulses;
+- (LeastSquare *)leastSquare:(NSMutableArray<Value *> *)values forTime:(double)time andAVNN:(double)avnn;
 @end
