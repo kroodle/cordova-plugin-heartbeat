@@ -14,6 +14,7 @@
 @property (nonatomic, readwrite) double rMSSD;
 @property (nonatomic, readwrite) double pNN50;
 @property (nonatomic, readwrite) double AVNN;
+@property (nonatomic, readwrite) double confidenceLevel;
 @property (nonatomic, readwrite) int bpm;
 
 @end
