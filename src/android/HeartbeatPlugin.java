@@ -69,13 +69,13 @@ public class HeartbeatPlugin extends CordovaPlugin implements HeartBeatListener 
    * @param callbackContext
    */
   protected void start(CallbackContext callbackContext) {
-    Log.i(TAG, "start");
+    // Log.i(TAG, "start");
     mainCallback = callbackContext;
     PluginResult result = new PluginResult(PluginResult.Status.NO_RESULT, "");
     result.setKeepCallback(true);
     callbackContext.sendPluginResult(result);
     monitor.startMeasuring();
-    disallowScreenToSleep();
+    // disallowScreenToSleep();
   }
 
   /**
@@ -83,11 +83,11 @@ public class HeartbeatPlugin extends CordovaPlugin implements HeartBeatListener 
    * @param callbackContext
    */
   protected void stop(CallbackContext callbackContext) {
-    Log.i(TAG, "stop");
+    // Log.i(TAG, "stop");
     PluginResult result = new PluginResult(PluginResult.Status.NO_RESULT, "");
     callbackContext.sendPluginResult(result);
     monitor.stopMeasuring();
-    allowScreenToSleep();
+    // allowScreenToSleep();
   }
 
   /**
@@ -118,12 +118,12 @@ public class HeartbeatPlugin extends CordovaPlugin implements HeartBeatListener 
     sendSuccessResult("batteryLevel", batteryLevel);
   }
 
-  private allowScreenToSleep() {
+  private void allowScreenToSleep() {
     // Prevent screen sleep
     cordova.getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
   }
 
-  private disallowScreenToSleep() {
+  private void disallowScreenToSleep() {
     // Allow screen to sleep again
     cordova.getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
   }
@@ -200,7 +200,7 @@ public class HeartbeatPlugin extends CordovaPlugin implements HeartBeatListener 
 
   @Override
   public void onHRVReady(HRV r) {
-    Log.d(TAG, "onHRVReady:" + String.valueOf(r));
+    // Log.d(TAG, "onHRVReady:" + String.valueOf(r));
     JSONObject result = new JSONObject();
     try {
       result.put("avnn", r.getAVNN());
@@ -219,13 +219,13 @@ public class HeartbeatPlugin extends CordovaPlugin implements HeartBeatListener 
 
   @Override
   public void onHeartBeat(int b) {
-    Log.d(TAG, "onHeartBeat:" + String.valueOf(b));
+    // Log.d(TAG, "onHeartBeat:" + String.valueOf(b));
     sendSuccessResult("bpm", b);
   }
 
   @Override
   public void onHeartBeat(HR hr) {
-    Log.d(TAG, "onHeartBeatHr:" + String.valueOf(hr));
+    // Log.d(TAG, "onHeartBeatHr:" + String.valueOf(hr));
     JSONObject result = new JSONObject();
     try {
       result.put("timestamp", hr.getTimestamp());
@@ -291,8 +291,8 @@ public class HeartbeatPlugin extends CordovaPlugin implements HeartBeatListener 
     } else if (s == Monitor.STATUS.LOW_RED_VALUE) {
       status = "LOW_RED_VALUE";
     }
-    if (status === 'ERROR' || status === 'COMPLETED') {
-      allowScreenToSleep();
+    if (status == "ERROR" || status == "COMPLETED") {
+      // allowScreenToSleep();
     }
     sendSuccessResult("status", status);
   }
@@ -317,9 +317,9 @@ public class HeartbeatPlugin extends CordovaPlugin implements HeartBeatListener 
     }
   }
 
-  // @Override
-  // public void onPercentageCompleted(double percentage) {
-  //   sendSuccessResult("progress", percentage);
-  // }
+  @Override
+  public void onPercentageCompleted(int percentage) {
+    sendSuccessResult("progress", percentage);
+  }
 
 }
