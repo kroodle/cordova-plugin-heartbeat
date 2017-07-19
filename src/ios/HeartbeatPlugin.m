@@ -203,7 +203,7 @@
     @"timestamp": @(hr.timestamp),
     @"correlation": @(hr.correlation),
     // @"fft": @(hr.FFT),
-    @"bpm": [NSNumber numberWithInt:hr.bpm]
+    @"bpm": [NSNumber numberWithInt:hr.BPM]
   };
   [self sendSuccessResultWithType:@"hr" andDictionary:result];
   [self sendResultQueue];
