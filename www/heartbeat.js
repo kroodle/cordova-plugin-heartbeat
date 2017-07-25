@@ -94,6 +94,10 @@ Heartbeat.prototype.setMeasureTime = function(measureTime, success, fail) {
   exec(success, fail, 'Heartbeat', 'setMeasureTime', [measureTime]);
 };
 
+Heartbeat.prototype.getBatteryLevel = function(success, fail) {
+  exec(success, fail, 'Heartbeat', 'getBatteryLevel', []);
+};
+
 Heartbeat.prototype.successCallback = function(payload) {
   if (payload && payload.type) {
     this.emit(payload.type, payload.data);

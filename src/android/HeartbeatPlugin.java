@@ -10,6 +10,7 @@ import android.util.Log;
 import android.graphics.Bitmap;
 import android.os.Handler;
 import android.os.SystemClock;
+import android.view.WindowManager;
 
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaInterface;
@@ -24,6 +25,7 @@ import org.json.JSONObject;
 import happitech.nl.heartbeatandroid.Interface.HeartBeatListener;
 import happitech.nl.heartbeatandroid.Monitor;
 import happitech.nl.heartbeatandroid.models.HRV;
+import happitech.nl.heartbeatandroid.models.HR;
 import happitech.nl.heartbeatandroid.models.Pulse;
 
 public class HeartbeatPlugin extends CordovaPlugin implements HeartBeatListener {
@@ -55,6 +57,9 @@ public class HeartbeatPlugin extends CordovaPlugin implements HeartBeatListener 
     } else if (action.equals("setMeasureTime")) {
       setMeasureTime(args, callbackContext);
       return true;
+    } else if (action.equals("getBatteryLevel")) {
+      getBatteryLevel(callbackContext);
+      return true;
     }
     return false;
   }
@@ -64,12 +69,13 @@ public class HeartbeatPlugin extends CordovaPlugin implements HeartBeatListener 
    * @param callbackContext
    */
   protected void start(CallbackContext callbackContext) {
-    Log.i(TAG, "start");
+    // Log.i(TAG, "start");
     mainCallback = callbackContext;
     PluginResult result = new PluginResult(PluginResult.Status.NO_RESULT, "");
     result.setKeepCallback(true);
     callbackContext.sendPluginResult(result);
     monitor.startMeasuring();
+    // disallowScreenToSleep();
   }
 
   /**
@@ -77,10 +83,11 @@ public class HeartbeatPlugin extends CordovaPlugin implements HeartBeatListener 
    * @param callbackContext
    */
   protected void stop(CallbackContext callbackContext) {
-    Log.i(TAG, "stop");
+    // Log.i(TAG, "stop");
     PluginResult result = new PluginResult(PluginResult.Status.NO_RESULT, "");
     callbackContext.sendPluginResult(result);
     monitor.stopMeasuring();
+    // allowScreenToSleep();
   }
 
   /**
@@ -98,6 +105,27 @@ public class HeartbeatPlugin extends CordovaPlugin implements HeartBeatListener 
       Log.e(TAG, "could not serialize result for callback");
     }
     Log.d(TAG, "Set measure time: " + measureTime);
+  }
+
+  /**
+   * Gets the battery level
+   * @param args
+   * @param callbackContext
+   */
+  protected void getBatteryLevel(CallbackContext callbackContext) {
+    float batteryLevel = monitor.getBatteryLevel();
+    Log.d(TAG, "batteryLevel:" + String.valueOf(batteryLevel));
+    sendSuccessResult("batteryLevel", batteryLevel);
+  }
+
+  private void allowScreenToSleep() {
+    // Prevent screen sleep
+    cordova.getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+  }
+
+  private void disallowScreenToSleep() {
+    // Allow screen to sleep again
+    cordova.getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
   }
 
   /**
@@ -172,13 +200,17 @@ public class HeartbeatPlugin extends CordovaPlugin implements HeartBeatListener 
 
   @Override
   public void onHRVReady(HRV r) {
-    Log.d(TAG, "onHRVReady:" + String.valueOf(r));
+    // Log.d(TAG, "onHRVReady:" + String.valueOf(r));
     JSONObject result = new JSONObject();
     try {
-      double avnn = r.getAVNN();
-      double bpm = 60 / (avnn / 1000);
-      result.put("avnn", avnn);
-      result.put("bpm", bpm);
+      result.put("avnn", r.getAVNN());
+      result.put("bpm", r.getBPM());
+      result.put("sd", r.getSD());
+      result.put("rmssd", r.getrMSSD());
+      result.put("pnn50", r.getpNN50());
+      result.put("confidenceLevel", r.getConfidenceLevel());
+      // result.put("badBeats", r.getBadBeats());
+      // result.put("totalBeats", r.getTotalBeats());
       sendSuccessResult("hrv", result);
     } catch (JSONException e) {
       Log.e(TAG, "could not serialize HRV");
@@ -187,8 +219,23 @@ public class HeartbeatPlugin extends CordovaPlugin implements HeartBeatListener 
 
   @Override
   public void onHeartBeat(int b) {
-    Log.d(TAG, "onHeartBeat:" + String.valueOf(b));
+    // Log.d(TAG, "onHeartBeat:" + String.valueOf(b));
     sendSuccessResult("bpm", b);
+  }
+
+  @Override
+  public void onHeartBeat(HR hr) {
+    // Log.d(TAG, "onHeartBeatHr:" + String.valueOf(hr));
+    JSONObject result = new JSONObject();
+    try {
+      result.put("timestamp", hr.getTimestamp());
+      result.put("bpm", hr.getBPM());
+      // result.put("corrolation", hr.getCorrolation());
+      // result.put("confidenceLevel", hr.getConfidenceLevel());
+      sendSuccessResult("hr", result);
+    } catch (JSONException e) {
+      Log.e(TAG, "could not serialize hr");
+    }
   }
 
   @Override
@@ -244,6 +291,9 @@ public class HeartbeatPlugin extends CordovaPlugin implements HeartBeatListener 
     } else if (s == Monitor.STATUS.LOW_RED_VALUE) {
       status = "LOW_RED_VALUE";
     }
+    if (status == "ERROR" || status == "COMPLETED") {
+      // allowScreenToSleep();
+    }
     sendSuccessResult("status", status);
   }
 
@@ -254,10 +304,10 @@ public class HeartbeatPlugin extends CordovaPlugin implements HeartBeatListener 
   }
 
   @Override
-  public void onGraphUpdated(Bitmap bitmap) {  }
+  public void onPPGCanvasUpdate(Bitmap bitmap) {  }
 
   @Override
-  public void onGraphArrayUpdated(double[] ppgData) {
+  public void onPPGDataUpdate(double[] ppgData) {
     // Log.d(TAG, "onPPGDataUpdate:" + Arrays.toString(ppgData));
     try {
       JSONArray json = new JSONArray(ppgData);
@@ -268,7 +318,7 @@ public class HeartbeatPlugin extends CordovaPlugin implements HeartBeatListener 
   }
 
   @Override
-  public void onPercentageCompleted(double percentage) {
+  public void onPercentageCompleted(int percentage) {
     sendSuccessResult("progress", percentage);
   }
 
