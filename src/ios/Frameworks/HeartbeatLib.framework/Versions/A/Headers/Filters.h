@@ -15,6 +15,6 @@
 @interface Filters : NSObject {
     double xv[NZEROS+1], yv[NPOLES+1];
 }
-- (double) processValue:(double) value;
+- (double)filterWithButterworthFilter:(double) value;
 
 @end

@@ -14,12 +14,12 @@
 #import "Functions.h"
 #import "Interpolation.h"
 #import "GraphConfig.h"
+
 typedef NS_ENUM(NSInteger, HeartBeatError) {
-    NO_FINGER_DETECTED,
+    FINGER_ERROR,
     CAMERA_HAS_NO_PERMISSION,
-    FINGER_PRESSURE,
     BAD_FINGER_POSITION,
-    TO_MUCH_MOVEMENT
+    TOO_MUCH_MOVEMENT
 };
 
 typedef NS_ENUM(NSInteger, HeartBeatStatus) {
@@ -30,7 +30,8 @@ typedef NS_ENUM(NSInteger, HeartBeatStatus) {
     COMPLETED,
     ERROR,
     NO_FINGER,
-    INACCURATE_MEASUREMENT
+    INACCURATE_MEASUREMENT,
+    FINGER_PLACEMENT
 };
 
 typedef NS_ENUM(NSInteger, HeartBeatWarning) {
@@ -40,7 +41,7 @@ typedef NS_ENUM(NSInteger, HeartBeatWarning) {
     LOW_BATTERY
 };
 
-
+@class Value;
 
 @protocol CameraDelegate
 - (void)statusChanged:(HeartBeatStatus)status;
@@ -48,7 +49,7 @@ typedef NS_ENUM(NSInteger, HeartBeatWarning) {
 - (void)errorOccured:(HeartBeatError)error;
 - (void)percentageUpdated:(int)percentage;
 - (void)graphUpdated:(NSArray *)array;
-- (void)returnBPM:(NSInteger)bpm;
+- (void)returnBPM:(HR *)bpm;
 @end
 
 @interface Camera : NSObject<AVCaptureVideoDataOutputSampleBufferDelegate>
@@ -56,7 +57,11 @@ typedef NS_ENUM(NSInteger, HeartBeatWarning) {
 @property (nonatomic, retain) Interpolation * interpolation;
 @property (nonatomic, retain) id<CameraDelegate> delegate;
 @property (nonatomic, readwrite) double measureTime;
+@property (nonatomic, readwrite) NSInteger validBeats;
+@property (nonatomic, retain) NSDate * measureInitialTime;
+@property (nonatomic, readwrite) int confidenceLevel;
 @property (nonatomic, retain) NSString * resultString;
+@property (nonatomic, retain) NSMutableArray <Value *> * values;
 
 - (void)startMeasuring;
 - (void)stopMeasure;

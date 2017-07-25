@@ -9,6 +9,7 @@
 #import "HRV.h"
 #import "Camera.h"
 #import "Graph.h"
+#import "Beat.h"
 @protocol HeartBeatDelegate <NSObject>
 
 @required
@@ -18,6 +19,7 @@
 - (void)onStatusChange:(HeartBeatStatus)status;
 - (void)onHeartBeat:(int) bpm;
 @optional
+- (void)onHeartBeatHR:(HR *)hr;
 - (void)onGraphUpdated:(UIView *)view;
 - (void)onGraphArrayUpdated:(NSArray *)array;
 - (void)onPercentageCompleted:(int)percentage;
@@ -32,10 +34,13 @@
 @property (nonatomic, readwrite) int pointsForGraph;
 @property (nonatomic, retain) NSMutableArray * total;
 @property (nonatomic, retain) NSMutableArray * beats;
+@property (nonatomic, retain) NSMutableArray * fftPoints;
 @property (nonatomic, retain) NSMutableArray * rawPoints;
+@property (nonatomic, assign) HRSettingsType hrSettingsType;
 
 - (void)start;
 - (void)stop;
 - (AVCaptureVideoPreviewLayer *) preview:(CGRect)frame;
 - (Graph *)enableGraph:(GraphConfig *)config;
+- (Beat *)getHeartbeatAfter:(int)seconds since:(NSDate*)date;
 @end
