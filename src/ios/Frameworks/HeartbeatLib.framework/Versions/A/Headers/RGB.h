@@ -13,5 +13,6 @@
 @property (nonatomic, readwrite) float r;
 @property (nonatomic, readwrite) float g;
 @property (nonatomic, readwrite) float b;
+@property (nonatomic, readwrite) int total;
 
 @end

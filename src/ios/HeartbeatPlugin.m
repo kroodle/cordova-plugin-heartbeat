@@ -1,5 +1,10 @@
 #import <HeartbeatLib/HeartbeatLib.h>
+#import "HeartbeatLib/HRV.h"
+#import "HeartbeatLib/Graph.h"
 #import "HeartbeatLib/Pulse.h"
+#import "HeartbeatLib/Beat.h"
+#import "HeartbeatLib/Value.h"
+#import "HeartbeatLib/FFT.h"
 #import "HeartbeatPlugin.h"
 
 @interface HeartbeatPlugin()<HeartBeatDelegate>
@@ -21,7 +26,7 @@
   // Might be something to make configurable in future
   [[self lib] setPointsForGraph:500];
   // Since we're not using the HRV yet we can decrease the measure time
-  [[self lib] setMeasureTime:20];
+  [[self lib] setMeasureTime:30];
 }
 
 - (void)start:(CDVInvokedUrlCommand*)command {
@@ -48,6 +53,12 @@
 
 - (void)setMeasureTime:(CDVInvokedUrlCommand*)command {
   [[self lib] setMeasureTime:[[command argumentAtIndex:0] intValue]];
+}
+
+// Not available yet for iOS, hence the empty response
+- (void)getBatteryLevel:(CDVInvokedUrlCommand*)command {
+  CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
+  [[self commandDelegate] sendPluginResult:pluginResult callbackId:[command callbackId]];
 }
 
 #pragma callback methods
@@ -138,6 +149,9 @@
     case FINGER_DETECTED:
       statusString = @"FINGER_DETECTED";
       break;
+    case FINGER_PLACEMENT:
+      statusString = @"FINGER_PLACEMENT";
+      break;
     case CALIBRATING:
       statusString = @"CALIBRATING";
       break;
@@ -168,6 +182,9 @@
     case LOW_QUALITY:
       warningString = @"LOW_QUALITY";
     break;
+    case LOW_BATTERY:
+      warningString = @"LOW_BATTERY";
+    break;
     default:
       warningString = @"";
     break;
@@ -181,22 +198,30 @@
   [self sendResultQueue];
 }
 
+- (void)onHeartBeatHR:(HR *)hr {
+  NSDictionary * result = @{
+    @"timestamp": @(hr.timestamp),
+    @"correlation": @(hr.correlation),
+    // @"fft": @(hr.FFT),
+    @"bpm": [NSNumber numberWithInt:hr.BPM]
+  };
+  [self sendSuccessResultWithType:@"hr" andDictionary:result];
+  [self sendResultQueue];
+}
+
 - (void)onError:(HeartBeatError)error {
   NSString * errorString = @"";
   switch (error) {
-    case NO_FINGER_DETECTED:
-      errorString = @"NO_FINGER_DETECTED";
+    case FINGER_ERROR:
+      errorString = @"FINGER_ERROR";
       break;
     case CAMERA_HAS_NO_PERMISSION:
       errorString = @"CAMERA_HAS_NO_PERMISSION";
       break;
-    case FINGER_PRESSURE:
-      errorString = @"FINGER_PRESSURE";
-      break;
     case BAD_FINGER_POSITION:
       errorString = @"BAD_FINGER_POSITION";
       break;
-    case TO_MUCH_MOVEMENT:
+    case TOO_MUCH_MOVEMENT:
       errorString = @"TOO_MUCH_MOVEMENT";
       break;
     default:
@@ -213,7 +238,15 @@
 }
 
 - (void)onHRVReady:(HRV *)hrv {
-  [self sendSuccessResultWithType:@"hrv" andDictionary:@{@"avnn": @(hrv.AVNN), @"bpm": [NSNumber numberWithInt:hrv.bpm]}];
+  NSDictionary * result = @{
+    @"sd": @(hrv.sd),
+    @"rmssd": @(hrv.rMSSD),
+    @"pnn50": @(hrv.pNN50),
+    @"avnn": @(hrv.AVNN),
+    @"confidenceLevel": @(hrv.confidenceLevel),
+    @"bpm": [NSNumber numberWithInt:hrv.bpm]
+  };
+  [self sendSuccessResultWithType:@"hrv" andDictionary:result];
   [self sendResultQueue];
 }
 
