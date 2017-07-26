@@ -75,7 +75,8 @@ public class HeartbeatPlugin extends CordovaPlugin implements HeartBeatListener 
     result.setKeepCallback(true);
     callbackContext.sendPluginResult(result);
     monitor.startMeasuring();
-    // disallowScreenToSleep();
+
+    keepScreenAwake();
   }
 
   /**
@@ -87,7 +88,8 @@ public class HeartbeatPlugin extends CordovaPlugin implements HeartBeatListener 
     PluginResult result = new PluginResult(PluginResult.Status.NO_RESULT, "");
     callbackContext.sendPluginResult(result);
     monitor.stopMeasuring();
-    // allowScreenToSleep();
+
+    allowScreenToSleep();
   }
 
   /**
@@ -104,7 +106,7 @@ public class HeartbeatPlugin extends CordovaPlugin implements HeartBeatListener 
     } catch (JSONException e) {
       Log.e(TAG, "could not serialize result for callback");
     }
-    Log.d(TAG, "Set measure time: " + measureTime);
+    // Log.d(TAG, "Set measure time: " + measureTime);
   }
 
   /**
@@ -114,18 +116,36 @@ public class HeartbeatPlugin extends CordovaPlugin implements HeartBeatListener 
    */
   protected void getBatteryLevel(CallbackContext callbackContext) {
     float batteryLevel = monitor.getBatteryLevel();
-    Log.d(TAG, "batteryLevel:" + String.valueOf(batteryLevel));
+    // Log.d(TAG, "batteryLevel:" + String.valueOf(batteryLevel));
     sendSuccessResult("batteryLevel", batteryLevel);
   }
 
-  private void allowScreenToSleep() {
-    // Prevent screen sleep
-    cordova.getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+  private void keepScreenAwake() {
+    try {
+      cordova.getActivity().runOnUiThread(
+        new Runnable() {
+          public void run() {
+            cordova.getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+          }
+        }
+      );
+    } catch (Exception e) {
+      Log.e(TAG, e.getMessage());
+    }
   }
 
-  private void disallowScreenToSleep() {
-    // Allow screen to sleep again
-    cordova.getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+  private void allowScreenToSleep() {
+    try {
+      cordova.getActivity().runOnUiThread(
+        new Runnable() {
+          public void run() {
+            cordova.getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+          }
+        }
+      );
+    } catch (Exception e) {
+      Log.e(TAG, e.getMessage());
+    }
   }
 
   /**
@@ -268,7 +288,7 @@ public class HeartbeatPlugin extends CordovaPlugin implements HeartBeatListener 
 
   @Override
   public void onStatusChange(Monitor.STATUS s) {
-    Log.d(TAG, "onStatusChange:" + String.valueOf(s));
+    // Log.d(TAG, "onStatusChange:" + String.valueOf(s));
     String status = "ERROR";
     if (s == Monitor.STATUS.STARTED) {
       status = "STARTED";
@@ -292,7 +312,7 @@ public class HeartbeatPlugin extends CordovaPlugin implements HeartBeatListener 
       status = "LOW_RED_VALUE";
     }
     if (status == "ERROR" || status == "COMPLETED") {
-      // allowScreenToSleep();
+      allowScreenToSleep();
     }
     sendSuccessResult("status", status);
   }
