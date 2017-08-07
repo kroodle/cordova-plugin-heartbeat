@@ -201,7 +201,7 @@
 - (void)onHeartBeatHR:(HR *)hr {
   NSDictionary * result = @{
     @"timestamp": @(hr.timestamp),
-    @"correlation": @(hr.correlation),
+    @"correlation":  [NSNumber numberWithInt:hr.correlation],
     // @"fft": @(hr.FFT),
     @"bpm": [NSNumber numberWithInt:hr.BPM]
   };
@@ -239,11 +239,11 @@
 
 - (void)onHRVReady:(HRV *)hrv {
   NSDictionary * result = @{
-    @"sd": @(hrv.sd),
-    @"rmssd": @(hrv.rMSSD),
-    @"pnn50": @(hrv.pNN50),
-    @"avnn": @(hrv.AVNN),
-    @"confidenceLevel": @(hrv.confidenceLevel),
+    @"sd": [NSNumber numberWithInt:hrv.sd],
+    @"rmssd": [NSNumber numberWithInt:hrv.rMSSD],
+    @"pnn50": [NSNumber numberWithInt:hrv.pNN50],
+    @"avnn": [NSNumber numberWithInt:hrv.AVNN],
+    @"confidenceLevel": [NSNumber numberWithInt:hrv.confidenceLevel],
     @"bpm": [NSNumber numberWithInt:hrv.bpm]
   };
   [self sendSuccessResultWithType:@"hrv" andDictionary:result];
