@@ -34,8 +34,11 @@ public class HeartbeatPlugin extends CordovaPlugin implements HeartBeatListener 
   private Monitor monitor;
   private CallbackContext mainCallback;
   private List<PluginResult> resultQueue;
-  private HashMap<String, CallbackContext> pendingCallbacks = new HashMap<String, CallbackContext>();
   private int measureTime = 60;
+
+  // private Handler resultHandler = new Handler();
+  // private boolean isSendingResult;
+  private HashMap<String, String> resultHashMap = new HashMap<String, String>();
 
   @Override
   public void initialize(CordovaInterface cordova, CordovaWebView webView) {
@@ -154,6 +157,10 @@ public class HeartbeatPlugin extends CordovaPlugin implements HeartBeatListener 
    * @param data
    */
   private void sendSuccessResult(final String type, final Object data) {
+    String currentResult = resultHashMap.get(type);
+    if (currentResult != null && currentResult == String.valueOf(data)){
+      return;
+    }
     if (data != null && type != null) {
       cordova.getThreadPool().execute(new Runnable() {
         public void run() {
@@ -170,6 +177,7 @@ public class HeartbeatPlugin extends CordovaPlugin implements HeartBeatListener 
               // Log.d(TAG, "Queueing success result: " + pluginResult.getMessage());
               resultQueue.add(pluginResult);
             }
+            resultHashMap.put(type, String.valueOf(data));
           } catch (JSONException e) {
             Log.e(TAG, "could not serialize result for callback");
           }
@@ -177,6 +185,20 @@ public class HeartbeatPlugin extends CordovaPlugin implements HeartBeatListener 
       });
     }
   }
+
+  // private void sendDelayedSuccessResult(final String type, final Object data) {
+  //   if (isSendingResult) {
+  //     return;
+  //   }
+  //   isSendingResult = true;
+  //   resultHandler.postDelayed(new Runnable() {
+  //     @Override
+  //     public void run() {
+  //       sendSuccessResult(type, data);
+  //       isSendingResult = false;
+  //     }
+  //   }, 1000);
+  // }
 
   /**
    * Send an error to the webview
@@ -266,7 +288,7 @@ public class HeartbeatPlugin extends CordovaPlugin implements HeartBeatListener 
 
   @Override
   public void onError(Monitor.ERROR e) {
-    Log.e(TAG, "onError:" + String.valueOf(e));
+    // Log.e(TAG, "onError:" + String.valueOf(e));
     String error = "";
     if (e == Monitor.ERROR.NO_FINGER_DETECTED) {
       error = "NO_FINGER_DETECTED";
