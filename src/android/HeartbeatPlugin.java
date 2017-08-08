@@ -157,33 +157,31 @@ public class HeartbeatPlugin extends CordovaPlugin implements HeartBeatListener 
    * @param data
    */
   private void sendSuccessResult(final String type, final Object data) {
-    String currentResult = resultHashMap.get(type);
-    if (currentResult != null && currentResult == String.valueOf(data)){
+    final String currentResult = resultHashMap.get(type);
+    final String newResult = String.valueOf(data);
+    if (data == null || type == null || currentResult == newResult) {
       return;
     }
-    if (data != null && type != null) {
-      cordova.getThreadPool().execute(new Runnable() {
-        public void run() {
-          JSONObject result = new JSONObject();
-          try {
-            result.put("type", type);
-            result.put("data", data);
-            PluginResult pluginResult = new PluginResult(PluginResult.Status.OK, result);
-            pluginResult.setKeepCallback(true);
-            if (mainCallback != null) {
-              // Log.d(TAG, "Sending success result: " + pluginResult.getMessage());
-              mainCallback.sendPluginResult(pluginResult);
-            } else {
-              // Log.d(TAG, "Queueing success result: " + pluginResult.getMessage());
-              resultQueue.add(pluginResult);
-            }
-            resultHashMap.put(type, String.valueOf(data));
-          } catch (JSONException e) {
-            Log.e(TAG, "could not serialize result for callback");
+    cordova.getThreadPool().execute(new Runnable() {
+      public void run() {
+        JSONObject result = new JSONObject();
+        try {
+          result.put("type", type);
+          result.put("data", data);
+          PluginResult pluginResult = new PluginResult(PluginResult.Status.OK, result);
+          pluginResult.setKeepCallback(true);
+          if (mainCallback != null) {
+            mainCallback.sendPluginResult(pluginResult);
+          } else {
+            // Log.d(TAG, "Queueing success result: " + pluginResult.getMessage());
+            resultQueue.add(pluginResult);
           }
+          resultHashMap.put(type, newResult);
+        } catch (JSONException e) {
+          Log.e(TAG, "could not serialize result for callback");
         }
-      });
-    }
+      }
+    });
   }
 
   // private void sendDelayedSuccessResult(final String type, final Object data) {
@@ -342,7 +340,9 @@ public class HeartbeatPlugin extends CordovaPlugin implements HeartBeatListener 
   @Override
   public void onBeatSignalStrength(double signal) {
     // Log.d(TAG, "onBeatSignalStrength:" + String.valueOf(signal));
-    sendSuccessResult("signal", signal);
+    // if (signal > 0) {
+    //   sendSuccessResult("signal", signal);
+    // }
   }
 
   @Override
@@ -350,6 +350,9 @@ public class HeartbeatPlugin extends CordovaPlugin implements HeartBeatListener 
 
   @Override
   public void onPPGDataUpdate(double[] ppgData) {
+    if (ppgData.length == 0) {
+      return;
+    }
     // Log.d(TAG, "onPPGDataUpdate:" + Arrays.toString(ppgData));
     try {
       JSONArray json = new JSONArray(ppgData);
