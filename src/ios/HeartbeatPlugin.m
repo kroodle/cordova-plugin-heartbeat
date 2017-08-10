@@ -11,15 +11,16 @@
 
 @property (copy, nonatomic) NSString *mainCallbackId;
 @property (strong, nonatomic) NSMutableArray *resultQueue;
+@property (strong, nonatomic) NSMutableDictionary *resultDictionary;
 @property (strong, nonatomic) HeartbeatLib *lib;
 @property (nonatomic, assign) HeartBeatStatus currentStatus;
-
 @end
 
 @implementation HeartbeatPlugin
 
 - (void)pluginInitialize {
   [self setResultQueue:[[NSMutableArray alloc] init]];
+  [self setResultDictionary:[[NSMutableDictionary alloc] init]];
   [self setLib:[[HeartbeatLib alloc] init]];
   [[self lib] setDelegate:self];
   // Only show last 500 points for now to draw graph
@@ -89,6 +90,11 @@
 }
 
 - (void)sendSuccessResult:(NSDictionary *)payload {
+  NSString *newResult = [NSString stringWithFormat:@"%@", payload[@"data"]];
+  NSString *currentResult = self.resultDictionary[payload[@"type"]];
+  if ([currentResult isEqualToString:newResult]) {
+    return;
+  }
   [[self commandDelegate] runInBackground:^{
     if (payload != nil) {
       CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:payload];
@@ -98,6 +104,7 @@
       } else {
         [_resultQueue addObject:pluginResult];
       }
+      self.resultDictionary[payload[@"type"]] = newResult;
     }
   }];
 }
