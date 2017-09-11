@@ -19,6 +19,5 @@ local.properties
 !default.perspectivev3
 xcuserdata/
 
-
-src/android/libs/*
-src/ios/Frameworks/*
+src/android/libs/HeartBeatLibAndroid.aar
+src/ios/Frameworks/HeartbeatLib.framework/
