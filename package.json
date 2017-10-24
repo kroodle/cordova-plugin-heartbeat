@@ -1,6 +1,6 @@
 {
   "name": "cordova-plugin-heartbeat",
-  "version": "2.2.2",
+  "version": "2.2.3",
   "description": "Measure your heartbeat by using the Happitech SDK",
   "main": "www/heartbeat.js",
   "scripts": {
