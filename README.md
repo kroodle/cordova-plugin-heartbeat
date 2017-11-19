@@ -1,6 +1,6 @@
 # Cordova Heartbeat Plugin
 
-For now it's only iOS and private. Based on [Happitech SDK](http://www.happitech.com/).
+Although this Cordova plugin is public and open-source. You'll need a license in order to use the [Happitech SDK](http://www.happitech.com/). If you have a license you'll need to clone this repository and replace the library/framework files with the ones you'd receive from Happitech.
 
 ## Installation
 
