@@ -2,7 +2,6 @@
 
 Although this Cordova plugin is public and open-source. You'll need a license for the [Happitech SDK](http://www.happitech.com/) in order to use it.
 If you have a license you'll need to clone this repository and replace the library/framework files with the ones you received from Happitech.
-Their SDK checks if the bundle identifier is valid, the SDK in this repository only works for `nl.aegon.fitkroodle` and `com.aegonlife.aegonfit`.
 
 ## Installation
 
