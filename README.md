@@ -23,7 +23,7 @@ To start measuring use `Heartbeat.start();` and to stop measuring use `Heartbeat
 
 ```javascript
 onDeviceReady: function() {
-	// Realtime heartrate
+  // Realtime heartrate
   Heartbeat.on('hr', function(hr) {
     console.log('Correlation of heartbeat is:', hr.correlation);
     console.log('Timestamp of heartbeat is:', hr.timestamp);
